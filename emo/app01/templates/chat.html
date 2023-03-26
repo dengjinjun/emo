@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>聊天室</title>
+    <link rel="stylesheet" href="/static/plugins/bootstrap-3.4.1/css/bootstrap.css">
+    <link rel="stylesheet" href="/static/plugins/font-awesome-4.7.0/css/font-awesome.css">
+    <style>
+        .comment p{
+            margin: 0;
+            text-align: center;
+            font-size: 10px;
+            color: #9d9d9d;
+            font-family: "等线 Light";
+        }
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="/index/">论坛首页</a>
+            <span class="navbar-brand"> >>> </span>
+            <span class="navbar-brand">聊天室</span>
+        </div>
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="/logout/">注销登录</a></li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                       aria-expanded="false">账号设置<span class="caret"></span></a>
+                    <ul class="dropdown-menu" style="z-index: 1000">
+                        <li><a href="/mypage/">我的主页</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a href="/myfollow/">我的关注</a></li>
+                        <li><a href="/mycollection/">我的收藏</a></li>
+                    </ul>
+                </li>
+            </ul><!--右边的账号选项-->
+        </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+</nav><!--导航条-->
+<div class="container-fluid"
+     style="width: 850px;margin:0 auto;padding:20px; box-shadow: 5px 5px 20px #aaa;">
+    <div class="page-header">
+        <h1><small>欢迎进入聊天室</small></h1>
+    </div><!--题头：欢迎进入聊天室-->
+
+    <div class="bs-example" data-example-id="simple-thumbnails">
+        <div class="col-sm-3" style="border: 1px #eb9316 solid; padding: 0;height: 450px; overflow:auto">
+            <div>我的关注</div>
+            {% for obj in queryset1 %}
+            <a href="/startchat/?nid={{ obj.followed.id }}"><li id="{{ obj.followed.id }}" class="list-group-item">
+                <div class="concern_list">
+                    <div style="display: inline-block">
+                        <img src="/media/{{ obj.followed.photo }}"
+                             style="height: 48px;width: 48px; border-radius:50%">
+                    </div><!--头像-->
+                    <div style="display: inline-block;margin-left: 30px">
+                        <div><p>{{ obj.followed.username }}</p></div>
+                    </div><!--昵称-->
+                </div><!--单个用户-->
+            </li></a>
+            {% endfor %}
+            <div>关注我的</div>
+                {% for obj in queryset2 %}
+                <a href="/startchat/?nid={{ obj.follower.id }}"><li id="{{ obj.follower.id }}" class="list-group-item">
+                    <div class="concern_list">
+                        <div style="display: inline-block">
+                            <img src="/media/{{ obj.follower.photo }}"
+                                 style="height: 48px;width: 48px; border-radius:50%">
+                        </div><!--头像-->
+                        <div style="display: inline-block;margin-left: 30px">
+                            <div><p>{{ obj.follower.username }}</p></div>
+                        </div><!--昵称-->
+                    </div><!--单个用户-->
+                </li></a>
+                {% endfor %}
+
+        </div><!--联系人-->
+        <div class="col-sm-9" style="position: relative;padding: 0; border: 1px #0f0f0f solid;box-shadow: 2px 2px #e0e0e0;height: 450px; width: 580px">
+            <div style="width: 580px;height: 410px;overflow: auto">
+                <ul class="list-group">
+                    {% for obj in queryset %}
+                        {% if obj.sender.id == nid %}
+                  <li class="list-group-item comment" style="height: 60px;padding: 5px;border: none">
+                  <p>{{ obj.time }}</p>
+                  <div>
+                      <div style="display: inline-block">
+                            <img src="/media/{{ obj.sender.photo }}"
+                                 style="height: 36px;width: 36px; border-radius:50%">
+                        </div><!--头像-->
+                      <span>{{ obj.content}}</span></div>
+                  </li>
+                            {% else %}
+                  <li class="list-group-item comment"  style="height: 60px;padding: 5px;border: none">
+                  <p>{{ obj.time }}</p>
+                  <div style="float: right;display:block">
+                      <span>{{ obj.content}}</span>
+                      <div style="display: inline-block">
+                            <img src="/media/{{ obj.sender.photo }}"
+                                 style="height: 36px;width: 36px; border-radius:50%">
+                      </div><!--头像--></div>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <div id="tog" class="input-group" style="position: absolute;bottom: 0;visibility: hidden">
+                <input type="text" id="text" class="form-control" style="border-radius: 0">
+                <span style="border-radius: 0" class="input-group-addon" onclick="sendmsg()">发送</span>
+            </div>
+        </div><!--聊天框-->
+    </div>
+</div>
+
+<script src="/static/js/jquery-3.6.3.min.js"></script>
+<script src="/static/plugins/bootstrap-3.4.1/js/bootstrap.min.js"></script>
+<script>
+    if ({{ nid }}){
+        document.getElementById('tog').style.visibility="visible"
+    }
+    function sendmsg(){
+        var text = $('#text').val();
+        $.ajax({
+            url:'/task/sendmsg/',
+            type:'GET',
+            data:{
+                text:text,
+                nid:{{ nid }}
+            },
+            success:function (res){
+                console.log(res);
+                $('#text').val("");
+                setTimeout('myrefresh()',1000)
+
+            }
+        })
+    }
+    function myrefresh(){
+   window.location.reload();
+}
+
+</script>
+</body>
+</html>

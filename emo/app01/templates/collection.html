@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>我的收藏</title>
+    <link rel="stylesheet" href="/static/plugins/bootstrap-3.4.1/css/bootstrap.css">
+    <link rel="stylesheet" href="/static/plugins/font-awesome-4.7.0/css/font-awesome.css">
+    <style>
+        .page-header h1, a {
+            display: inline-block;
+            text-decoration: none;
+        }
+        .thumbnail span{
+            display:block;
+        }
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="/index/">论坛首页</a>
+            <span class="navbar-brand"> >>> </span>
+            <span class="navbar-brand">我的收藏</span>
+        </div>
+
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="#">注销登录</a></li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                       aria-expanded="false">账号设置<span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="/mypage/">我的主页</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a href="/myfollow/">我的关注</a></li>
+                    </ul>
+                </li>
+            </ul><!--右边的账号选项-->
+        </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+</nav><!--导航条-->
+
+<div class="container-fluid"
+     style="width: 850px;margin:0 auto;padding:20px; box-shadow: 5px 5px 20px #aaa;">
+    <div class="page-header">
+        <h1><small>收藏列表</small></h1>
+    </div><!--题头：收藏列表-->
+
+    <div class="bs-example" data-example-id="simple-thumbnails">
+        <div class="row">
+            {% for obj in queryset %}
+            <div class="col-xs-6 col-md-3">
+                <div class="thumbnail">
+                    <a href="/post_in/?nid={{ obj.post_id }}"><img data-src="holder.js/100%x180" alt="100%x180"
+                         style="height: 120px; width: 100%; display: block;" src="/media/{{ obj.post.image }}"
+                         data-holder-rendered="true"></a>
+                    <div style="margin-top: 5px">
+                    <a href="/userpage/?uid={{ obj.post.poster.id }}" style="color: black">{{ obj.post.poster.username }}</a>
+
+                    <button onclick="cancel_collection(this)" id="{{ obj.post_id }}" class="btn btn-danger btn-xs" style="float: right">取消收藏</button>
+                    </div>
+                    <span style="display:block;margin-top: 5px">{{ obj.post.title}}</span>
+
+
+
+
+                </div>
+            </div><!--帖子1-->
+            {% endfor %}
+        </div><!--成排摆放-->
+    </div><!--全部帖子-->
+</div>
+
+<script src="/static/js/jquery-3.6.3.min.js"></script>
+<script src="/static/plugins/bootstrap-3.4.1/js/bootstrap.min.js"></script>
+<script>
+        function cancel_collection(obj){
+            $.ajax({
+            url:'/task/cancel_collection/',
+            type:"get",
+            data:{
+                nid: obj.getAttribute('id')
+            },
+            success:function (res){
+                console.log(res);
+                var obj = document.getElementById(res);
+                obj.innerText="已取消"
+                obj.remove()
+                alert('已取消收藏')
+            }
+        })
+    }
+</script>
+</body>
+</html>

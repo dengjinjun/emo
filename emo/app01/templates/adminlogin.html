@@ -1,0 +1,70 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>管理员登录</title>
+    <link rel="stylesheet" href="/static/plugins/bootstrap-3.4.1/css/bootstrap.css">
+    <link rel="stylesheet" href="/static/plugins/font-awesome-4.7.0/css/font-awesome.css">
+    <style>
+        .btn{
+            height:40px;
+            padding: 10px;
+        }
+        #img_code{
+            width:125px;
+        }
+        .container{
+            width: 500px;
+        }
+        .loginform{
+            display: inline-block;
+            position: fixed;
+            top: 40px;
+            right: 180px;
+            width: 400px;
+            height: 280px;
+            padding: 10px 20px;
+            border-radius: 10px;
+            box-shadow: 5px 5px 20px #aaa;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+
+
+    <form class="loginform" method="post" novalidate>
+        <h3 style="text-align: center">管理员登入</h3>
+        {% csrf_token %}
+        <div class="form-group">
+        {{ form.username }}
+            <span style="color: red">{{ form.username.errors.0 }}</span>
+      </div>
+
+                <div class="form-group">
+        {{ form.password }}
+            <span style="color: red">{{ form.password.errors.0 }}</span>
+      </div>
+
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-xs-7">
+        {{ form.code }}
+            <span style="color: red">{{ form.code.errors.0 }}</span>
+                            </div>
+
+
+<div class="col-xs-5">
+        <img id="img_code" src="/image/code/">
+    </div>
+                        </div>
+                    </div>
+
+        <button type="submit" class="btn btn-danger btn-block btn-lg">login</button>
+    </form>
+
+
+</div>
+</body>
+</html>

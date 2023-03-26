@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>我的关注</title>
+    <link rel="stylesheet" href="/static/plugins/bootstrap-3.4.1/css/bootstrap.css">
+    <link rel="stylesheet" href="/static/plugins/font-awesome-4.7.0/css/font-awesome.css">
+    <style>
+        .concern_list {
+            height: 65px;
+            width: 700px;
+        }
+        .recommend_concern{
+            height: 65px;
+            width: 400px;
+        }
+        .list-group-item {
+            width: 750px;
+            padding: 0 0 20px 0;
+        }
+        .rec_con_ele{
+            display: inline-block;
+        }
+        .fixed_panel{
+            position: fixed;
+            right:30px;
+            box-shadow: 2px 2px 5px #e3e3e3;
+            border-radius: 8px
+        }
+                .page-header h1,a{
+            display: inline-block;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <a class="navbar-brand" href="/index/">论坛首页</a>
+            <span class="navbar-brand"> >>> </span>
+            <span class="navbar-brand">我的关注</span>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="/logout/">注销登录</a></li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                       aria-expanded="false">账号设置<span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="/mypage/">我的主页</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a href="/mycollection/">我的收藏</a></li>
+                    </ul>
+                </li>
+            </ul><!--右边的账号选项-->
+        </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+</nav><!--导航条-->
+
+
+<div class="container-fluid">
+    <div class="col-sm-8">
+        <div class="page-header" style="margin-top: 70px">
+        <h1><small>关注列表</small></h1>
+        </div><!--题头：关注列表-->
+        <ul class="list-group">
+            {% for obj in queryset %}
+            <li class="list-group-item">
+                <div class="concern_list">
+                    <div class="col-sm-1">
+                        <img src="/media/{{ obj.followed.photo }}"
+                             style="height: 60px;width: 60px; border-radius:50%;display: inline-block;margin-top: 10px">
+                    </div><!--头像-->
+                    <div class="col-sm-5">
+                        <div><h4 style="line-height: 55px;margin-left: 30px">{{ obj.followed.username }}</h4></div>
+                    </div><!--昵称-->
+                    <div class="col-sm-5">
+                                                <button id="{{ obj.followed.id }}" onclick="cancel_follow(this)" type="button" class="btn btn-danger navbar-btn"
+                                style="float: right;margin-top: 20px;margin-right: -100px">取消关注
+                        </button>
+                        <a href="/userpage/?uid={{ obj.followed.id}}" target="_blank"><button type="button" class="btn btn-default navbar-btn"
+                                style="float: right;margin-top: 20px;margin-right: 10px">进入主页
+                        </button></a>
+                        <a href="/startchat/?nid={{ obj.followed.id }}"><button type="button" class="btn btn-primary navbar-btn"
+                                style="float: right;margin-top: 20px;margin-right: 20px">私信
+                        </button></a>
+                    </div><!--主页和私信按钮-->
+                </div><!--单个关注用户-->
+            </li>
+            {% endfor %}
+        </ul><!--关注用户列表-->
+    </div>
+</div>
+
+
+<script src="/static/js/jquery-3.6.3.min.js"></script>
+<script src="/static/plugins/bootstrap-3.4.1/js/bootstrap.min.js"></script>
+<script>
+    function cancel_follow(obj){
+            $.ajax({
+            url:'/task/cancel_follow/',
+            type:"get",
+            data:{
+                nid: obj.getAttribute('id')
+            },
+            success:function (res){
+                console.log(res);
+                var obj = document.getElementById(res);
+                obj.innerText="关注"
+                obj.remove()
+                alert("已取消关注")
+            }
+        })
+    }
+
+</script>
+</body>
+</html>

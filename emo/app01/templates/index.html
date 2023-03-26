@@ -1,0 +1,236 @@
+{% load static %}
+
+{% load notifications_tags %}
+{% notifications_unread as unread_count %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>论坛主页</title>
+    <link rel="stylesheet" href="{% static 'plugins/bootstrap-3.4.1/css/bootstrap.css' %}">
+    <link rel="stylesheet" href="{% static 'plugins/font-awesome-4.7.0/css/font-awesome.css' %}">
+    <style>
+        .navbar {
+            border-radius: 0;
+        }
+        .more .more_item {
+            display: inline-block;
+            margin-right: 30px;
+            font-size: 15px;
+            text-decoration: none
+        }
+        .media-body {
+            height: 150px;
+        }
+        .input-group{
+            margin-top: 20px;
+        }
+        .container{
+            float: right;
+            width: 500px;
+            margin: 0 20px 20px 20px;
+        }
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="/index/">电竞首页</a>
+        </div>
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+                {% for obj in queryset1 %}
+                <li id="{{ obj.id }}"><a href="/plate_in/?nid={{ obj.id }}"><img style="height: 20px;width: 20px" src="/media/{{obj.plate_logo}}">  {{ obj.plate_name }}</a></li>
+                {% endfor %}
+            </ul><!--左边的游戏类别-->
+            <form class="navbar-form navbar-left" method="post" action="/search/">
+                {% csrf_token %}
+                <div class="form-group">
+                    <input type="text" class="form-control" required="required" placeholder="寻找你感兴趣的内容" name="key_word" value="{{ key_word }}">
+                </div>
+                <button type="submit" class="btn btn-default"><i class="fa fa-search" aria-hidden="true"></i></button>
+            </form><!--搜索-->
+
+        <button style="margin-top: 8px" id="hide1" class="btn btn-default" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>我要发帖
+        </button>
+        <div class="collapse" id="collapseExample">
+                <div class="well container">
+                    <div class="input-group">
+                        <span class="input-group-addon" id="basic-addon1">选择一个版块</span>
+                            <select id="plate" class="form-control" name="plate">
+                                {% for item in queryset1 %}
+                                <option value="{{ item.id }}">{{ item.plate_name }}</option>
+                                {% endfor %}
+                            </select>
+                    </div><!--选择版块-->
+                    <div class="input-group">
+                        <span class="input-group-addon" id="basic-addon1">输入标题</span>
+                            <input type="text" id="title" name="title" class="form-control" placeholder="帖子标题" aria-describedby="basic-addon1">
+                    </div><!--输入帖头-->
+                    <div class="input-group">
+                        <span class="input-group-addon" id="basic-addon1">输入内容</span>
+                        <textarea id="content" type="text" class="form-control" placeholder="你想分享什么内容" aria-describedby="basic-addon1"></textarea>
+                    </div><!--输入帖子内容-->
+                    <div class="input-group">
+                        <span class="input-group-addon" id="basic-addon1">图片</span>
+                            <input id="image" name="image" type="file" class="form-control" placeholder="Username" aria-describedby="basic-addon1">
+                    </div><!--上传图片-->
+                    <button onclick="post()" class="btn btn-success" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample" style="margin-top:10px">发布</button>
+                </div>
+        </div>
+
+            <ul class="nav navbar-nav navbar-right" style="position: fixed; right: 10px;top: 0" >
+                <li id="hide4"><a href="/chat/">聊天室</a></li>
+                <li id="hide2"><a href="/logout/" data-toggle="modal">注销登录</a></li>
+                <li id="hide3" class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                       aria-expanded="false">{{ request.session.info.username }}<span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="/mypage/">
+
+{% if unread_count %}
+    <a>{{ unread_count }}</a>
+{% endif %}
+
+                            我的主页</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a href="/myfollow/">我的关注</a></li>
+                        <li><a href="/mycollection/">我的收藏</a></li>
+
+                    </ul>
+                </li>
+            </ul><!--右边的账号选项-->
+        </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+</nav><!--导航条-->
+<div class="container-fluid">
+    <div class="col-sm-8">
+        <div id="carousel-example-generic" class="carousel slide" data-ride="carousel"
+             style="width:650px;height:380px;margin-left:80px;margin-top: 80px">
+            <!-- Indicators -->
+            <ol class="carousel-indicators">
+                <li data-target="#carousel-example-generic" data-slide-to="0" class="active"></li>
+                <li data-target="#carousel-example-generic" data-slide-to="1"></li>
+                <li data-target="#carousel-example-generic" data-slide-to="2"></li>
+                <li data-target="#carousel-example-generic" data-slide-to="3"></li>
+            </ol>
+            <!-- Wrapper for slides -->
+            <div class="carousel-inner" role="listbox">
+                <div class="item active">
+                    <img src="{% static 'img/girl.jpg' %}" style="width: 650px; height: 380px;" alt="...">
+                </div>
+                {% for obj in queryset2 %}
+                <div class="item">
+                    <a href="/post_in/?nid={{ obj.id }}"><img src="/media/{{ obj.image }}" style="width: 650px; height: 380px;" alt="..."></a>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Controls -->
+            <a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
+                <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+                <span class="sr-only">上一个</span>
+            </a>
+            <a class="right carousel-control" href="#carousel-example-generic" role="button" data-slide="next">
+                <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                <span class="sr-only">下一个</span>
+            </a>
+        </div><!--滚动画面-->
+        <div class="panel panel-warning" style="margin-top: 30px">
+            <div class="panel-heading">
+                <h3 class="panel-title">按照帖子热度降序</h3>
+            </div>
+        </div>
+        {% for obj in queryset3 %}
+        <div class="media">
+            <div class="media-left">
+                <a href="/userpage/?uid={{ obj.poster.id }}">
+                    <img class="media-object" data-src="holder.js/64x64" alt="64x64"
+                         src="/media/{{ obj.poster.photo }}"
+                         data-holder-rendered="true" style="width: 48px; height: 48px;">
+                </a>
+            </div><!--头像-->
+            <div class="media-body">
+                <h4 style="margin-top: 10px;margin-bottom: 20px;font-family: 方正姚体">{{ obj.poster.username }}</h4>
+                <a href="/post_in/?nid={{ obj.id }}" class="media-heading" style="color: #0f0f0f"><h4>{{ obj.title}}</h4></a>
+                <p>{{ obj.content }}</p>
+                <img src="/media/{{ obj.image }}" alt="" style="height: 200px;margin-left: 50px">
+                <div class="more clearfix" style="margin: 20px">
+                    <span class="more_item" style="color: #c9302c"><i class="fa fa-level-up" aria-hidden="true"></i>热度{{ obj.like }}</span>
+                    <span class="more_item" style="float:right"><i class="fa fa-area-chart" aria-hidden="true"></i>{{ obj.plate }}</span>
+                    <div class="more_item" style="float:right"><i class="fa fa-calendar" aria-hidden="true"></i>{{ obj.comment }}
+                    </div>
+                </div><!--更多操作-->
+            </div><!--文本-->
+        </div><!--内容板块1-->
+        {% endfor %}
+
+    </div><!--左边8格-->
+    <div class="col-sm-4">
+        <div class="panel panel-danger" style="position: fixed; height: 380px;width: 380px;margin-top: 80px;">
+            <div class="panel-heading">
+                <h3 class="panel-title"><i class="fa fa-fire" aria-hidden="true"
+                                           style="color:darkred;font-size: 18px;"></i> 热门推荐</h3>
+            </div>
+            <div class="panel-body" style="margin-top: -20px">
+                {% for obj in queryset2 %}
+                <h4 style="font-size: 20px;margin-bottom: 20px"><a class="label label-danger" href="/post_in/?nid={{ obj.id }}">{{ obj.title}}</a></h4>
+                {% endfor %}
+            </div>
+        </div><!--热门面板-->
+
+        <a href="#" class="btn btn-success" id="top" style="position: fixed;bottom: 10px; right: 40px;font-size: 20px"
+           data-toggle="tooltip" title="到底了，点击返回顶部" data-placement="top"><span class="glyphicon glyphicon-menu-up"
+                                                                               aria-hidden="true"></span></a>
+        <!--返回顶部按钮-->
+    </div><!--右边4格-->
+</div><!--内容显示-->
+<script src="{% static 'js/jquery-3.6.3.min.js' %}"></script>
+<script src="{% static 'plugins/bootstrap-3.4.1/js/bootstrap.min.js' %}"></script>
+<script>
+   $(function (){
+       var card={{ card }}
+        if (card==0){
+            $("#hide1").remove();
+            $("#hide2").remove();
+            $("#hide3").remove();
+            $("#hide4").remove();
+        }
+        var obj=document.getElementById('{{nid}}');
+        obj.style.backgroundColor="#000000";
+    })
+    function post(){
+        var formData = new FormData();
+        var plate = $("#plate").val();
+        var title = $("#title").val();
+        var content = $("#content").val();
+        var image_file = document.getElementById('image');
+        var image = image_file.files[0];
+        formData.append('plate', plate);
+        formData.append('title', title);
+        formData.append('content', content);
+        formData.append('image', image);
+
+           $.ajax({
+            url:'/task/post/',
+            type:"post",
+            data:formData,
+               async:false,
+               processData:false,
+               contentType:false,
+            success:function (res){
+                console.log(res);
+                $("#plate").val("");
+                $("#title").val("");
+                $("#content").val("");
+                $("#image").val("");
+                alert("发布成功")
+            }
+        })
+
+    }
+</script>
+</body>
+</html>

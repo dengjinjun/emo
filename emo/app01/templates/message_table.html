@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>私信管理</title>
+    <link rel="stylesheet" href="/static/plugins/bootstrap-3.4.1/css/bootstrap.css">
+    <link rel="stylesheet" href="/static/plugins/font-awesome-4.7.0/css/font-awesome.css">
+    <style>
+        .container{
+            width: 1000px;
+            margin-top: 20px;
+        }
+        .func_button_list input{
+            margin-left: 30px;
+        }
+        .nav{
+            margin-bottom: 20px;
+        }
+        .navbar-brand{
+            display: inline-block;
+            margin-top: -10px;
+            margin-right: 20px;
+            padding-bottom: 0px;
+            text-align: end;
+            font-size: 30px;
+            font-family: 华文隶书 ;
+        }
+        .glyphicon{
+            font-size: 24px;
+            color: darkred;
+            display: inline-block;
+            float: right;
+            margin-top: 10px;
+        }
+        .form-control{
+            margin-right: 20px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <ul class="nav nav-tabs">
+        <a class="navbar-brand" href="#">Admin System</a>
+        <li role="presentation" ><a href="/manage/user/">用户表</a></li>
+        <li role="presentation"><a href="/manage/post/">发帖表</a></li>
+        <li role="presentation"><a href="/manage/reply/">跟贴表</a></li>
+        <li role="presentation"><a href="/manage/plate/">版块表</a></li>
+        <li role="presentation"><a href="/manage/collection/">收藏表</a></li>
+        <li role="presentation"><a href="/manage/follow/">关注表</a></li>
+        <li role="presentation" class="active"><a href="#">私信表</a></li>
+        <a class="glyphicon glyphicon-off" aria-hidden="true" href="/logout/"></a><!--退出-->
+    </ul><!--导航-->
+    <div class="panel panel-default">
+      <div class="panel-heading"><i class="fa fa-wpforms" aria-hidden="true"></i> 搜索条目</div>
+    <form class="form-inline" style="margin:10px 20px" method="post">
+        {% csrf_token %}
+        <div class="input-group">
+      <input type="text" class="form-control" placeholder="输入关键词检索条目" name="key_word" value="{{ key_word }}">
+      <span class="input-group-btn">
+        <button class="btn btn-default" type="submit"><i class="fa fa-search" aria-hidden="true"></i></button>
+      </span>
+    </div><!-- /input-group -->
+    </form></div><!--输入表单-->
+    <div class="panel panel-default">
+  <div class="panel-heading"><i class="fa fa-list-ul" aria-hidden="true"></i> 数据列表</div>
+
+<table class="table table-bordered table-hover">
+      <thead>
+        <tr>
+          <th>数据ID</th>
+          <th>发送人</th>
+          <th>接收人</th>
+          <th>信息内容</th>
+            <th>发送时间</th>
+            <th>操作</th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for obj in query_set %}
+        <tr>
+          <th scope="row">{{ obj.id }}</th>
+            <td>{{ obj.sender.username }}</td>
+          <td>{{ obj.receiver.username }}</td>
+            <td>{{ obj.content }}</td>
+            <td>{{ obj.time }}</td>
+          <td>
+              <a class="btn btn-danger btn-xs" href="/manage/message/delete/?nid={{ obj.id }}"><i class="fa fa-trash-o" aria-hidden="true"></i></a>
+          </td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table></div><!--数据表单-->
+<nav aria-label="Page navigation">
+  <ul class="pagination">
+{{ page_html }}
+  </ul>
+</nav>
+</div>
+
+
+</body>
+</html>

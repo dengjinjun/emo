@@ -1,0 +1,234 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>帖子详情</title>
+    <link rel="stylesheet" href="{% static 'plugins/bootstrap-3.4.1/css/bootstrap.css' %}">
+    <link rel="stylesheet" href="{% static 'plugins/font-awesome-4.7.0/css/font-awesome.css' %}">
+    <style>
+        .more_item {
+            display: inline-block;
+            margin-right: 30px;
+            font-size: 14px;
+            text-decoration: none
+        }
+
+        .panel-body div {
+            margin-top: 0;
+            margin-bottom: 0;
+            border-radius: 0;
+        }
+
+        #comment_panel {
+            border-radius: 0;
+            border-left: none;
+            border-right: none;
+        }
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="/plate_in/?nid={{ post_obj.plate.id }}" style="margin-top: -5px">
+                <img src="/media/{{ post_obj.plate.plate_logo }}"
+                     style="height: 30px;width: 30px;display: inline-block">  {{ post_obj.plate.plate_name }}</a>
+            <span class="navbar-brand" style="margin-top: -1px"> >>> </span>
+            <span class="navbar-brand" style="margin-top: -1px">帖子详情</span>
+            <span class="media-heading"
+                  style="display:inline-block;margin-top:12px;margin-left:120px;color: whitesmoke;font-size: 16px">{{ post_obj.title }}</span>
+            <button type="button" id="btn1" class="btn btn-default navbar-btn" style="position: absolute;right: 200px" onclick="no1()"><i
+                    class="fa fa-thumbs-o-up" aria-hidden="true"></i>顶
+            </button>
+            <button type="button" class="btn btn-default navbar-btn" onclick="on4()" data-toggle="modal" data-target="#myModal" style="position: absolute;right: 110px"><i
+                    class="fa fa-user-plus" aria-hidden="true"></i>回复
+            </button>
+            <button type="button" class="btn btn-default navbar-btn" style="position: absolute;right: 20px"><a style="color: black" href="/index/"><i class="fa fa-home" aria-hidden="true"></i>主页</a>
+            </button>
+        </div>
+    </div>
+</nav><!--导航条-->
+<div class="container-fluid" style="width: 800px;margin:60px auto;padding:20px;box-shadow: 5px 5px 20px #aaa;">
+    <div class="media">
+        <div class="media-left">
+            <a href="/userpage/?uid={{ post_obj.poster.id }}">
+                <img class="media-object" data-src="holder.js/64x64" alt="64x64"
+                     src="/media/{{ post_obj.poster.photo }}"
+                     data-holder-rendered="true" style="width: 48px; height: 48px;">
+            </a>
+        </div><!--头像-->
+        <div class="media-body">
+            <div style="width: 630px;height: 60px;display: inline-block;font-size: 14px ">
+                <span><i class="fa fa-user-circle" aria-hidden="true"
+                      ></i>{{ post_obj.poster.username }}</span>
+                <span class="label label-warning">楼主</span>
+                <span>{{ post_obj.comment }}</span>
+                <span>发表在</span>
+                <span>{{ post_obj.plate.plate_name }}</span>
+                <span>板块</span>
+{#                <h4 class="media-heading">{{ post_obj.title }}</h4>#}
+            </div><!--标头-->
+            <div style="float: right">
+                <button type="button" class="btn btn-warning" id="btn2" onclick="no2()"><span class="glyphicon glyphicon-star"
+                                                                    aria-hidden="true"></span>收藏
+                </button>
+            </div><!--收藏按钮-->
+            <div style="width: 700px;margin:20px 0 30px 0 ">
+                <p>{{ post_obj.content }}</p>
+                <img src="/media/{{ post_obj.image }}" style="height: 300px">
+
+
+            </div><!--帖子正文-->
+        </div>
+    </div><!--内容板块-->
+
+    <div class="panel panel-primary" id="comment_panel">
+        <div class="panel-heading"><h3 class="panel-title">全部评论</h3></div><!--分界线-->
+        {% for obj in queryset %}
+
+            <div class="panel-body">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <div class="media">
+                            <div class="media-left">
+                                <a href="/userpage/?uid={{ obj.replier.id }}">
+                                    <img class="media-object" data-src="holder.js/64x64" alt="64x64" src="/media/{{ obj.replier.photo }}"
+                                         data-holder-rendered="true" style="width: 36px; height: 36px;"></a>
+                            </div><!--头像-->
+                            <div class="media-body">
+                                <div style="width: 630px;display: inline-block ">
+                                        <span><i class="fa fa-user-circle" aria-hidden="true"
+                                                 style="margin:5px;font-size: 15px"></i>{{ obj.replier }}   发表 &nbsp&nbsp&nbsp&nbsp &nbsp{{ obj.time }}</span>
+                                     <span style="float: right">{{ forloop.counter }}楼</span>
+                                </div>
+                            </div><!--评论头-->
+                        </div>
+                    </div><!--评论头版式-->
+                    <div class="panel-body">
+                        <p class="media-heading" style="margin-left: 50px;display:inline-block">
+                            {{ obj.content }}</p>
+                        <div class="more clearfix" style="margin-left: 50px;display:inline-block;float: right">
+
+                           <a onclick="on3(this)" data-toggle="modal" data-target="#myModal" id="{{ obj.id }}"><i class="fa fa-comments-o" aria-hidden="true"></i> 回复</a>
+                        </div>
+                        {% if obj.more %}
+                        <div class="well" style="padding: 0;margin-left: 30px">回复用户  【{{ obj.more.replier }}】  的评论"{{ obj.more.content }}"</div>
+                        {% endif %}
+                    </div><!--评论内容-->
+                </div>
+
+            </div>
+
+
+            {% endfor %}
+
+    </div>
+</div>
+
+<!-- 模态框 -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">回复评论</h4>
+      </div>
+      <div class="modal-body">
+          <textarea placeholder="请输入评论" class="form-control" name="comment" id="111" rows="4" cols="60"></textarea>
+      </div>
+
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+        <button type="button" class="btn btn-primary comment-btn" id="btn3" data-dismiss="modal">提交</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="{% static "js/jquery-3.6.3.min.js" %}"></script>
+<script src="{% static 'plugins/bootstrap-3.4.1/js/bootstrap.min.js' %}"></script>
+<script>
+    $(function (){
+        var obj = document.getElementById('btn2');
+        if ({{ is_collect }}){
+            obj.innerText="已收藏";
+            obj.disabled=true;
+        }
+        btn1Event();
+        btn2Event();
+        btn3Event();
+
+    })
+     pid = '';
+    function btn1Event(){
+        $("#btn1").click(function(){
+            $.ajax({
+            url:'/task/like/',
+            type:"get",
+            data:{
+                nid:{{ post_obj.id }}
+            },
+            success:function (res){
+                console.log(res);
+            }
+        })
+    })
+    }
+    function btn2Event(){
+        $("#btn2").click(function(){
+            $.ajax({
+            url:'/task/collect/',
+            type:"get",
+            data:{
+                nid:{{ post_obj.id }}
+            },
+            success:function (res){
+                console.log(res);
+            }
+        })
+    })
+    }
+    function btn3Event(){
+        $("#btn3").click(function (){
+            $.ajax({
+                url:"/task/comment/",
+                type:'post',
+                data:{
+                    post_id:{{ post_obj.id }},
+                    content:$("#111").val(),
+                    pid:pid,
+                },
+                success:function (res){
+                    console.log(res);
+                    $("#111").val("");
+                    pid='';
+                    alert("评论成功")
+                }
+            })
+        })
+    }
+
+   function no1() {
+    var button = document.getElementById('btn1');
+    button.innerText="已顶";
+    button.disabled = true;
+    console.log("ok")
+}
+   function no2() {
+        var button = document.getElementById('btn2');
+        button.innerText = "已收藏";
+        button.disabled = true;
+    }
+   function on3(obj){
+        pid = obj.getAttribute('id')
+        console.log(pid);
+    }
+    function on4(){
+        pid=0;
+        console.log(pid)
+    }
+</script>
+</body>
+</html>

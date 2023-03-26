@@ -1,0 +1,128 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>帖子管理</title>
+    <link rel="stylesheet" href="{% static 'plugins/bootstrap-3.4.1/css/bootstrap.css' %}">
+    <link rel="stylesheet" href="{% static 'plugins/font-awesome-4.7.0/css/font-awesome.css' %}">
+    <link rel="stylesheet" href="{% static 'plugins/datetimepicker/css/bootstrap-datetimepicker.min.css' %}">
+    <style>
+        .container{
+            width: 1000px;
+            margin-top: 20px;
+        }
+        .func_button_list input{
+            margin-left: 30px;
+        }
+        .nav{
+            margin-bottom: 20px;
+        }
+        .navbar-brand{
+            display: inline-block;
+            margin-top: -10px;
+            margin-right: 20px;
+            padding-bottom: 0;
+            text-align: end;
+            font-size: 30px;
+            font-family: 华文隶书 ;
+        }
+        .glyphicon{
+            font-size: 24px;
+            color: darkred;
+            display: inline-block;
+            float: right;
+            margin-top: 10px;
+        }
+        .form-group{
+            margin-right: 10px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <ul class="nav nav-tabs">
+        <a class="navbar-brand" href="#">Admin System</a>
+        <li role="presentation" ><a href="/manage/user/">用户表</a></li>
+        <li role="presentation" class="active"><a href="/manage/post/">发帖表</a></li>
+        <li role="presentation"><a href="/manage/reply/">跟贴表</a></li>
+        <li role="presentation"><a href="/manage/plate/">版块表</a></li>
+        <li role="presentation"><a href="/manage/collection/">收藏表</a></li>
+        <li role="presentation"><a href="/manage/follow/">关注表</a></li>
+        <li role="presentation"><a href="/manage/message/">私信表</a></li>
+        <a class="glyphicon glyphicon-off" aria-hidden="true" href="/come/"></a><!--退出-->
+    </ul><!--导航-->
+    <div class="panel panel-default">
+      <div class="panel-heading"><i class="fa fa-wpforms" aria-hidden="true"></i>添加帖子</div>
+    <form class="form-inline" enctype="multipart/form-data" style="margin:10px 20px" method="post" novalidate="true">
+        {% csrf_token %}
+        {% for field in form %}
+        <div class="form-group">
+        {{ field.label }}{{ field }}
+      </div>
+            <span style="color: red">{{ field.errors.0 }}</span>
+        {% endfor %}
+
+      <button type="submit" class="btn btn-primary btn-xs" style="margin-top: 10px"><i class="fa fa-plus" aria-hidden="true" style="font-size: 18px;margin-top:2px"></i></button>
+    </form></div><!--输入表单-->
+    <div class="panel panel-default">
+  <!-- Default panel contents -->
+  <div class="panel-heading"><i class="fa fa-list-ul" aria-hidden="true"></i> 数据列表</div>
+  <!-- Table -->
+<table class="table table-bordered table-hover">
+      <thead>
+        <tr>
+          <th>数据ID</th>
+          <th>发帖人</th>
+          <th>版块</th>
+            <th>帖头</th>
+            <th>帖子内容</th>
+            <th>点赞数</th>
+            <th>发帖时间</th>
+            <th>图片内容</th>
+            <th>操作</th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for obj in query_set %}
+        <tr>
+          <th scope="row">{{ obj.id }}</th>
+            <td>{{ obj.poster.username }}</td>
+          <td>{{ obj.plate.plate_name }}</td>
+                      <th scope="row">{{ obj.title }}</th>
+            <td>{{ obj.content }}</td>
+          <td>{{ obj.like }}</td>
+                      <th scope="row">{{ obj.comment }}</th>
+            <td><img src="/media/{{ obj.image }}" alt="" style="height: 120px;margin-left: 30px"></td>
+          <td>
+              <a class="btn btn-primary btn-xs" href="/manage/post/{{ obj.id }}/edit/"><i class="fa fa-edit" aria-hidden="true"></i></a>
+              <a class="btn btn-danger btn-xs" href="/manage/post/delete/?nid={{ obj.id }}"><i class="fa fa-trash-o" aria-hidden="true"></i></a>
+          </td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table></div><!--数据表单-->
+<nav aria-label="Page navigation">
+  <ul class="pagination">
+{{ page_html }}
+  </ul>
+</nav>
+</div>
+
+<script src="{% static 'js/jquery-3.6.3.min.js' %}"></script>
+<script src="{% static 'plugins/bootstrap-3.4.1/js/bootstrap.min.js' %}"></script>
+<script src="{% static 'plugins/datetimepicker/js/bootstrap-datetimepicker.min.js' %}"></script>
+<script src="{% static 'plugins/datetimepicker/locales/bootstrap-datetimepicker.zh-CN.js' %}"></script>
+<script>
+$(function() {
+    $('#id_comment').datetimepicker({
+        language: "zh-CN",
+        autoclose: 1,
+        startView:2,
+        minView: 0,
+    });
+})
+</script>
+</body>
+</html>

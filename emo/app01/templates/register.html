@@ -1,0 +1,105 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>注册页面</title>
+    <link rel="stylesheet" href="/static/plugins/bootstrap-3.4.1/css/bootstrap.css">
+    <style>
+        #bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        #bg img {
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+        .loginform {
+            display: inline-block;
+            position: fixed;
+            top: 40px;
+            right: 180px;
+            width: 300px;
+            padding: 10px 20px;
+            border-radius: 10px;
+            box-shadow: 5px 5px 20px #aaa;
+            z-index: 1000;
+        }
+        .loginform h3 {
+            text-align: center;
+            color: whitesmoke;
+        }
+        .end {
+            display: inline-block;
+            width: 300px;
+            margin-top: 20px;
+            text-align: center;
+            position: relative;
+            font-size: 17px;
+            line-height: 2em;
+            color: #fff;
+        }
+        .end p {
+            font-weight: 500;
+            text-align: left;
+            text-shadow: 2px 2px 10px #fff;
+        }
+        .end a {
+            font-weight: 500;
+            color: #fff;
+            margin-right: 20px;
+        }
+        .form-group{
+            color: whitesmoke;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div id="bg">
+        <img src="{% static 'img/loginbg.png' %}" alt="">
+    </div>
+        <div class="end">
+        <p>
+            那时<br>
+            一把手柄<br>
+            就能开启一个王朝<br>
+            如今<br>
+            我们各奔行程 <br>
+            走在各自的人生轨迹上 <br>
+
+            但是，他们的荣耀仍留在这里。<br>
+            无论如何，这份信仰都不会消失<br>
+            虚拟的世界<br>
+            承载的是少年的梦想<br>
+            是“电竞”让我们相聚在了一起 <br>
+            浴血作战， 奋斗不止<br>
+            有喧闹和争吵 <br>
+            也有键盘鼠标抒发的竞技情怀<br>
+            永远的少年，我们在电竞论坛等你<br>
+            <br>
+        </p>
+    </div>
+
+    <form class="loginform" enctype="multipart/form-data" method="post">
+        {% csrf_token %}
+        <h3>用户注册</h3>
+                {% for field in form %}
+        <div class="form-group">
+        {{ field.label }}{{ field }}
+      </div>
+            <span style="color: red">{{ field.errors.0 }}</span>
+        {% endfor %}
+        <button type="submit" class="btn btn-success btn-lg" style="display: inline-block;margin-left: 80px;width:100px;height:46px">注册</button>
+    </form>
+</div>
+</body>
+</html>

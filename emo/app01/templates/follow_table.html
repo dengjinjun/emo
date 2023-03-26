@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>关注管理</title>
+    <link rel="stylesheet" href="/static/plugins/bootstrap-3.4.1/css/bootstrap.css">
+    <link rel="stylesheet" href="/static/plugins/font-awesome-4.7.0/css/font-awesome.css">
+    <style>
+        .container{
+            width: 1000px;
+            margin-top: 20px;
+        }
+        .func_button_list input{
+            margin-left: 30px;
+        }
+        .nav{
+            margin-bottom: 20px;
+        }
+        .navbar-brand{
+            display: inline-block;
+            margin-top: -10px;
+            margin-right: 20px;
+            padding-bottom: 0px;
+            text-align: end;
+            font-size: 30px;
+            font-family: 华文隶书 ;
+        }
+        .glyphicon{
+            font-size: 24px;
+            color: darkred;
+            display: inline-block;
+            float: right;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <ul class="nav nav-tabs">
+        <a class="navbar-brand" href="#">Admin System</a>
+        <li role="presentation" ><a href="/manage/user/">用户表</a></li>
+        <li role="presentation"><a href="/manage/post/">发帖表</a></li>
+        <li role="presentation"><a href="/manage/reply/">跟贴表</a></li>
+        <li role="presentation"><a href="/manage/plate/">版块表</a></li>
+        <li role="presentation"><a href="/manage/collection/">收藏表</a></li>
+        <li role="presentation" class="active"><a href="#">关注表</a></li>
+        <li role="presentation"><a href="/manage/message/">私信表</a></li>
+        <a class="glyphicon glyphicon-off" aria-hidden="true" href="/come/"></a><!--退出-->
+    </ul><!--导航-->
+    <div class="panel panel-default">
+      <div class="panel-heading"><i class="fa fa-wpforms" aria-hidden="true"></i> 添加条目</div>
+    <form class="form-inline" style="margin:10px 20px" method="post" action="/manage/follow/">
+        {% csrf_token %}
+      <div class="form-group">
+        <input type="text" class="form-control" id="exampleInputEmail3" name="follower" placeholder="关注人ID">
+      </div>
+      <div class="form-group">
+        <input type="text" class="form-control" id="exampleInputPassword3" name="followed" placeholder="被关注人ID">
+      </div>
+      <button type="submit" class="btn btn-primary btn-xs"><i class="fa fa-plus" aria-hidden="true" style="font-size: 18px;margin-top:2px"></i></button>
+    </form></div><!--输入表单-->
+    <div class="panel panel-default">
+  <!-- Default panel contents -->
+  <div class="panel-heading"><i class="fa fa-list-ul" aria-hidden="true"></i> 数据列表</div>
+  <!-- Table -->
+<table class="table table-bordered table-hover">
+      <thead>
+        <tr>
+          <th>数据ID</th>
+          <th>关注人ID</th>
+          <th>关注人</th>
+          <th>被关注人ID</th>
+          <th>被关注人</th>
+          <th>操作</th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for obj in queryset %}
+        <tr>
+          <th scope="row">{{ obj.id }}</th>
+          <td>{{ obj.follower_id }}</td>
+          <td>{{ obj.follower.username }}</td>
+            <td>{{ obj.followed_id }}</td>
+          <td>{{ obj.followed.username }}</td>
+          <td>
+{#              <a class="btn btn-primary btn-xs"><i class="fa fa-edit" aria-hidden="true"></i></a>#}
+              <a class="btn btn-danger btn-xs" href="/manage/follow/delete/?nid={{ obj.id }}"><i class="fa fa-trash-o" aria-hidden="true"></i></a>
+          </td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table></div><!--数据表单-->
+<nav aria-label="Page navigation">
+  <ul class="pagination">
+{{ page_html }}
+  </ul>
+</nav>
+</div>
+
+
+</body>
+</html>
